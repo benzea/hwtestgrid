@@ -1,0 +1,1 @@
+from .dugrid import app

@@ -1,0 +1,3 @@
+graft dugrid/templates
+graft dugrid/static
+include dugrid/schema.sql

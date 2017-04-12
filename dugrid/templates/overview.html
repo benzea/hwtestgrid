@@ -1,0 +1,25 @@
+<!-- -*- engine:django -*- -->
+{% extends "layout.html" %}
+{% block body %}
+
+<table class="table table-sm table-hover">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Size</th>
+      <th>Avail</th>
+      <th>Used</th>
+    </tr>
+    <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.id }}</td>
+      <td>{{ entry.size }} GB </td>
+      <td>{{ entry.avail }} GB </td>
+      <td>{{ entry.used }} GB </td>
+    </tr>
+  {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
