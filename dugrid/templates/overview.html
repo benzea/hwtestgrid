@@ -20,23 +20,19 @@
       <table class="table table-sm table-hover">
         <thead>
           <tr>
-            <th>
-              < {{ bounds[0] }} GB
-            </th>
             {% for b in bounds %}
-                <th> > {{ b }} GB </th>
+                <th> {{ b[0] }} &mdash; {{ b[1] }} GB </th>
             {% endfor %}
+            <th> > {{ bounds[-1][1] }} GB </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td> {{ sm128['percent'] |round(1) }} % </td>
             {% for p in percents %}
               <td>{{ p |round(1)}} % </td>
               {% endfor %}
           </tr>
           <tr>
-            <td> {{ sm128['count'] }} </td>
             {% for cnt in counts %}
               <td>{{ cnt }}</td>
             {% endfor %}
