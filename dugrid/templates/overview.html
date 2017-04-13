@@ -1,8 +1,14 @@
 <!-- -*- engine:django -*- -->
 {% extends "layout.html" %}
 {% block body %}
+  <div class="row">
+    <div class="col">
+      <p> Total Machines: <a href="/list"> {{ machines }} </a></p>
+    </div>
+  </div>
 
-  Total Machines: {{ machines }}
+  <h3>Space used</h3>
+
   <div class="row">
     <div class="col">
       <div id="hist" class="graph"></div>
