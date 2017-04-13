@@ -75,16 +75,28 @@ def extract_info(e):
     }
 
 
-@app.route('/')
-def overview():
+@app.route('/list')
+def list():
     db = db_get()
     query = ("select id, json_extract(hwdb.data, '$.diskusage.total') as data from hwdb")
     cur = db.execute(query)
     data = cur.fetchall()
     info = [extract_info(e) for e in data]
+    return render_template('list.html',
+                           title="Machine List",
+                           entries=info)
+
+@app.route('/')
+def overview():
+    db = db_get()
+    query = "select json_extract(hwdb.data, '$.diskusage.total.used') as data from hwdb"
+    cur = db.execute(query)
+    res = cur.fetchall()
+    data = [r["data"] / 1e9 for r in res]
     return render_template('overview.html',
                            title="Overview",
-                           entries=info)
+                           data_raw=data,
+                           dumps=json.dumps)
 
 
 if __name__ == '__main__':
