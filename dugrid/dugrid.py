@@ -94,8 +94,8 @@ def overview():
     res = cur.fetchall()
     data = [r["data"] / 1e9 for r in res]
     total_machines = len(data)
-    x = [0, 128, 256, 512, 1024];
-    counts = [len(list(filter(lambda x: x > b, data))) for b in x]
+    x = [128, 256, 512, 1024];
+    counts = [len(list(filter(lambda x: x < b, data))) for b in x]
     percent = [cnt / total_machines * 100 for cnt in counts]
     return render_template('overview.html',
                            title="Overview",
