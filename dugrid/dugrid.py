@@ -15,6 +15,7 @@ app.config.update({
     os.path.join(app.root_path, 'dugrid.db'),
 })
 
+bounds = [128, 256, 512, 1024]
 
 def db_connect():
     db_path = app.config['DATABASE']
@@ -94,18 +95,17 @@ def overview():
     res = cur.fetchall()
     data = [r["data"] / 1e9 for r in res]
     total_machines = len(data)
-    x = [128, 256, 512, 1024];
-    counts = [len(list(filter(lambda x: x > b, data))) for b in x]
+    counts = [len(list(filter(lambda x: x > b, data))) for b in bounds]
     percent = [cnt / total_machines * 100 for cnt in counts]
-    sm128_count = len(list(filter(lambda x: x < 128, data)))
+    sm128_count = len(list(filter(lambda x: x < bounds[0], data)))
     sm128 = {
         'count': sm128_count,
         'percent': sm128_count / total_machines * 100
     }
     return render_template('overview.html',
                            title="Overview",
-                           data_raw=data,
-                           bounds=x,
+                           data_raw=list(filter(lambda x: x < 1024, data)),
+                           bounds=bounds,
                            machines=total_machines,
                            counts=counts,
                            percents=percent,
