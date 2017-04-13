@@ -95,13 +95,12 @@ def overview():
     data = [r["data"] / 1e9 for r in res]
     total_machines = len(data)
     x = [0, 128, 256, 512, 1024];
-    bounds = list(zip(x[:-1], x[1:]))
-    counts = [len(list(filter(lambda x: b[0] < x < b[1], data))) for b in bounds]
+    counts = [len(list(filter(lambda x: x > b, data))) for b in x]
     percent = [cnt / total_machines * 100 for cnt in counts]
     return render_template('overview.html',
                            title="Overview",
                            data_raw=data,
-                           bounds=bounds,
+                           bounds=x,
                            machines=total_machines,
                            counts=counts,
                            percents=percent,
