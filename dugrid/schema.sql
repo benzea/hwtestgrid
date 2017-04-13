@@ -1,4 +1,4 @@
-drop table if exists runs;
+drop table if exists hwdb;
 create table hwdb (
   id TEXT primary key,
   'data' JSON
