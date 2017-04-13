@@ -95,8 +95,13 @@ def overview():
     data = [r["data"] / 1e9 for r in res]
     total_machines = len(data)
     x = [128, 256, 512, 1024];
-    counts = [len(list(filter(lambda x: x < b, data))) for b in x]
+    counts = [len(list(filter(lambda x: x > b, data))) for b in x]
     percent = [cnt / total_machines * 100 for cnt in counts]
+    sm128_count = len(list(filter(lambda x: x < 128, data)))
+    sm128 = {
+        'count': sm128_count,
+        'percent': sm128_count / total_machines * 100
+    }
     return render_template('overview.html',
                            title="Overview",
                            data_raw=data,
@@ -104,7 +109,7 @@ def overview():
                            machines=total_machines,
                            counts=counts,
                            percents=percent,
-                           dumps=json.dumps)
+                           sm128=sm128)
 
 
 if __name__ == '__main__':
