@@ -2,11 +2,39 @@
 {% extends "layout.html" %}
 {% block body %}
 
+  Total Machines: {{ machines }}
   <div class="row">
     <div class="col">
       <div id="hist" class="graph"></div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col">
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr>
+            {% for b in bounds %}
+              <th>{{  b[0] }} - {{ b[1] }} GB </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for p in percents %}
+              <td>{{ p |round(1)}} % </td>
+              {% endfor %}
+          </tr>
+          <tr>
+            {% for cnt in counts %}
+              <td>{{ cnt }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>

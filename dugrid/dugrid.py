@@ -76,7 +76,7 @@ def extract_info(e):
 
 
 @app.route('/list')
-def list():
+def lst():
     db = db_get()
     query = ("select id, json_extract(hwdb.data, '$.diskusage.total') as data from hwdb")
     cur = db.execute(query)
@@ -93,9 +93,18 @@ def overview():
     cur = db.execute(query)
     res = cur.fetchall()
     data = [r["data"] / 1e9 for r in res]
+    total_machines = len(data)
+    x = [0, 128, 256, 512, 1024];
+    bounds = list(zip(x[:-1], x[1:]))
+    counts = [len(list(filter(lambda x: b[0] < x < b[1], data))) for b in bounds]
+    percent = [cnt / total_machines * 100 for cnt in counts]
     return render_template('overview.html',
                            title="Overview",
                            data_raw=data,
+                           bounds=bounds,
+                           machines=total_machines,
+                           counts=counts,
+                           percents=percent,
                            dumps=json.dumps)
 
 
