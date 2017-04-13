@@ -18,7 +18,6 @@ app.config.update({
 
 def db_connect():
     db_path = app.config['DATABASE']
-    print("DB: %s" % db_path, file=sys.stderr)
     rv = sqlite3.connect(db_path)
     rv.row_factory = sqlite3.Row
     return rv
