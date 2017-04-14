@@ -13,7 +13,7 @@
     <tbody>
     {% for entry in entries %}
     <tr>
-      <td>{{ entry.id }}</td>
+      <td><a href="/machine/{{ entry.id }}"> {{ entry.id }} </a></td>
       <td>{{ entry.size }} GB </td>
       <td>{{ entry.avail }} GB </td>
       <td>{{ entry.used }} GB </td>

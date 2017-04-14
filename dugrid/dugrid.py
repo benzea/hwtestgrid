@@ -75,6 +75,14 @@ def extract_info(e):
         'avail': "%3.2f" % (d['avail'] / 1e9),
     }
 
+@app.route('/machine/<machine_id>', methods=['GET'])
+def show_single(machine_id):
+    db = db_get()
+    cur = db.execute('select data from hwdb where id = ?', [machine_id])
+    row = cur.fetchall()
+    return render_template('machine.html',
+                           title="Machine %s" % machine_id,
+                           data=json.loads(row[0]['data']))
 
 @app.route('/list')
 def lst():
