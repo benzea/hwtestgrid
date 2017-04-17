@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import json
 import os
 import sqlite3
@@ -115,6 +116,14 @@ def overview():
                            machines=total_machines,
                            counts=counts,
                            percents=percent)
+
+@app.template_filter()
+def filter_epochformat(value, format='%d.%m.%Y %H:%M'):
+    dt = datetime.datetime.fromtimestamp(value)
+    return dt.strftime(format)
+
+app.jinja_env.filters['epochformat'] = filter_epochformat
+
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@
     <div class="col col-md-8">
       <span class="sysinfo">
         Machine: {{ data['id'] }} <br>
-        <small>Updated: {{ data['timestamp'] }}</small>
+        <small>Updated: {{ data['timestamp'] | epochformat }}</small>
       </span>
     </div>
   </div>
