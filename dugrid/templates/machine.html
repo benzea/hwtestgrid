@@ -1,7 +1,7 @@
 <!-- -*- engine:django -*- -->
 {% extends "layout.html" %}
 {% block body %}
-  
+
  <div class="row">
     <div class="col offset-md-1 col-md-1" style="text-align: right">
       <h3>
@@ -15,5 +15,35 @@
       </span>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col offset-md-1 col-md-1" style="text-align: right">
+      <h3>
+        <i class="fa fa-hdd-o fa-3" aria-hidden="true"></i>
+      </h3>
+    </div>
+    <div class="col col-md-8">
+      <table class="table table-sm table-hover sysinfo">
+        <thead>
+          <tr>
+            <th>Mountpoint</th>
+            <th>Size</th>
+            <th>Used</th>
+            <th>Avail</th>
+          </tr>
+          <tbody>
+            {% for entry in data['diskusage'] %}
+              <tr>
+                <td>{{ entry }}</td>
+                <td>{{ data['diskusage'][entry]['size'] | filesizeformat }} </td>
+                <td>{{ data['diskusage'][entry]['used'] | filesizeformat }}</td>
+                <td>{{ data['diskusage'][entry]['avail'] | filesizeformat }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </div>
+
 
 {% endblock %}
