@@ -1,0 +1,3 @@
+[submodule "hwtestgrid/fedora-laptop-testing"]
+	path = hwtestgrid/fedora-laptop-testing
+	url = https://pagure.io/fedora-laptop-testing.git

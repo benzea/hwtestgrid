@@ -1,0 +1,92 @@
+<!-- -*- engine:django -*- -->
+{% extends "layout.html" %}
+{% block body %}
+
+ <div class="row">
+    <div class="col offset-md-1 col-md-1" style="text-align: right">
+      <h3>
+        <i class="fa fa-laptop fa-3" aria-hidden="true"></i>
+      </h3>
+    </div>
+    <div class="col col-md-10">
+      <table class="sysinfo">
+        <tdata>
+        {% for entry in data['sysinfo'] | mysort(['Manufacturer', 'Product Name', 'Version', 'Family', 'SKU Number']) %}
+          <tr>
+            <th>{{ entry }}:&nbsp;</th>
+            <td>{{ data['sysinfo'][entry] }}</td>
+          </tr>
+        {% endfor %}
+        </tdata>
+      </table>
+
+      Download the <a href="/download/{{ data['rowid'] }}">full result bundle</a>.
+    </div>
+</div>
+
+  <div class="row">
+<!--    <div class="col offset-md-1 col-md-1" style="text-align: right">-->
+<!--      <h3>-->
+<!--        <i class="fa fa-hdd fa-3" aria-hidden="true"></i>-->
+<!--      </h3>-->
+<!--    </div>-->
+    <div class="col col-md-12">
+      <h3>
+      Support Summary
+      </h3>
+      <table class="supportsummary">
+        <tdata>
+          {% for entry in data['hwtable'].keys() | mysort(end=['issues']) %}
+            <tr>
+              <th>{{ data['hwtable'][entry]['type'] }}</th>
+              <td style="{{ data['hwtable'][entry]['status'] | state_to_style }}">{{ data['hwtable'][entry]['text'] | safe }}</td>
+            </tr>
+          {% endfor %}
+        </tdata>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h3>
+      lspci (<a href="/download/{{ data['rowid'] }}/{{ data['testruns'][0] }}/sysinfo/pre/lspci_-vvnn?fname=lspci.txt">full result</a>)
+      </h3>
+      <pre class="listing">{{ data['lspci'] }}</code></pre>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h3>
+      lsusb (<a href="/download/{{ data['rowid'] }}/{{ data['testruns'][0] }}/sysinfo/pre/lsusb_-v?fname=lsusb.txt">full result</a>)
+      </h3>
+      <pre class="listing"><code>{{ data['lsusb'] }}</code></pre>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h3>
+      Detailed Test Results
+      </h3>
+      <table class="testresults">
+        <tdata>
+          {% for entry in data['tests'] %}
+            <tr>
+              <th>{{ entry['name'] }}
+                (<a href="/download/{{ data['rowid'] }}/{{ entry['dir'] }}/debug.log?fname={{ entry['name'] }}.log">log</a>, 
+                <a href="/download/{{ data['rowid'] }}/{{ entry['dir'] }}/?fname={{ entry['name'] }}.zip">zip</a>)
+              </th>
+              <td style="{{ entry['style'] | state_to_style }}">{{ entry['status'] }}</td>
+              <td>{{ entry['whiteboard'] }}</td>
+            </tr>
+          {% endfor %}
+        </tdata>
+      </table>
+    </div>
+  </div>
+
+
+
+{% endblock %}

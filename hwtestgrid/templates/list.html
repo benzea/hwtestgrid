@@ -5,18 +5,16 @@
 <table class="table table-sm table-hover">
   <thead>
     <tr>
-      <th>Id</th>
-      <th>Size</th>
-      <th>Avail</th>
-      <th>Used</th>
+      <th>Tested Machine</th>
+      <th>Tested OS</th>
+      <th>Date</th>
     </tr>
     <tbody>
     {% for entry in entries %}
     <tr>
-      <td><a href="/machine/{{ entry.id }}"> {{ entry.id }} </a></td>
-      <td>{{ entry.size }} GB </td>
-      <td>{{ entry.avail }} GB </td>
-      <td>{{ entry.used }} GB </td>
+      <td><a href="/testrun/{{ entry.rowid }}"> {{ entry.manufacturer }}, {{ entry.product }} </a></td>
+      <td>{{ entry.OS }} </a></td>
+      <td>{{ entry.time }} </a></td>
     </tr>
   {% endfor %}
     </tbody>

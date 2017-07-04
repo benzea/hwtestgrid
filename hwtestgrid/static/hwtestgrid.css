@@ -44,6 +44,9 @@ body {
     }
 }
 
+table ul, table ol, table dl {
+  margin-bottom: 0rem;
+}
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
@@ -64,13 +67,22 @@ body {
     }
 }
 
+pre.listing {
+  border: 2px solid #e5e5e5;
+  background: #ddd;
+}
+
 /* for icons */
 i.color-gray {
     color: gray;
 }
 
-.sysinfo {
+.sysinfo, .supportsummary {
     font-family: 'Share Tech Mono', monospace;
+}
+
+.supportsummary tr, .testresults td, .testresults th {
+    border: 2px solid #ccc;
 }
 
 .graph {

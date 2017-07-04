@@ -4,11 +4,11 @@ RUN dnf -y update && dnf clean all
 RUN dnf -y install python3-pip && dnf clean all
 
 EXPOSE 5000
-ENV FLASK_APP dugrid
+ENV FLASK_APP hwtestgrid
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-ENV DATABASE="/data/dugrid.db"
+ENV DATABASE="/data/hwtest.db"
 RUN mkdir /data && chmod a+rwx /data
 VOLUME ["/data"]
 

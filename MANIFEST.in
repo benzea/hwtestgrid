@@ -1,3 +1,3 @@
-graft dugrid/templates
-graft dugrid/static
-include dugrid/schema.sql
+graft hwtestgrid/templates
+graft hwtestgrid/static
+include hwtestgrid/schema.sql

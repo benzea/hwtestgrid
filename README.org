@@ -5,7 +5,7 @@ pip install --editable .
 #+END_SRC
 
 #+BEGIN_SRC sh
-export FLASK_APP=dugrid
+export FLASK_APP=hwtestgrid
 export FLASK_DEBUG=true
 flask setupdb
 flask run
@@ -14,19 +14,19 @@ flask run
 ** Docker
 #+BEGIN_SRC sh
 #First time only, create a volume to make data persistent
-sudo docker volume create --name dugrid-storage
+sudo docker volume create --name hwtestgrid-storage
 
 #Build and run
-sudo docker build -t dugrid .
-sudo docker run -p 5000:5000 -v dugrid-storage:/data --name dugrid -d dugrid
+sudo docker build -t hwtestgrid .
+sudo docker run -p 5000:5000 -v hwtestgrid-storage:/data --name hwtestgrid -d hwtestgrid
 
 #Stopping
-sudo docker stop dugrid && sudo docker rm dugrid
+sudo docker stop hwtestgrid && sudo docker rm hwtestgrid
 #+END_SRC
 
 ** Uploading data
 
 #+BEGIN_SRC sh
-curl -H "Content-Type: application/json" -X POST http://localhost:5000/upload -d @<FILE>
+curl -H "Content-Type: application/zip" -X POST http://localhost:5000/upload -d @<FILE>
 #+END_SRC
 
