@@ -204,6 +204,7 @@ class Test:
             gbbinfo = self.read_sysinfo('gbb_info_--json')
             # There might be junk before everything, remove anything before the first opening braces
             gbbinfo = gbbinfo[gbbinfo.find('{\n'):]
+            data = json.loads(gbbinfo)
 
 
             self.sysinfo['Kernel'] = data['software']['os']['kernel']
