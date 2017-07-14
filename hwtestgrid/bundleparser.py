@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -27,7 +28,7 @@ class GBB:
         self.software = data['system-info']['software']
         self.kernel = data['system-info']['software']['os']['kernel']
         self.os = data['system-info']['software']['os']['type']
-        self.renderer = data['system-info']['renderer']
+        self.gpus = data['system-info']['hardware']['gpus']
 
         # TODO: Fill in data from GBB
         self.watt = data['power']
@@ -374,7 +375,18 @@ class Test:
                 self.hwtable['screen'].text = '{:d}x{:d}px ({:d}x{:d}mm, {:.2g} Hz)'.format(x, y, width, height, gbb.hardware['screen']['refresh'])
                 self.hwtable['screen'].resolved = True
 
-            self.hwtable['graphics'].text = gbb.renderer + ' (only active card shown)'
+            self.hwtable['graphics'].text = '<ul>\n'
+
+            for gpu in gbb.gpus:
+                vendor = gpu['vendor-name'] if 'vendor-name' in gpu else "0x{:X}".format(gpu['vendor'])
+                device = gpu['device-name'] if 'device-name' in gpu else "0x{:X}".format(gpu['device'])
+                if not gpu['enabled']:
+                    note = ' (disabled)'
+                else:
+                    note = ''
+                self.hwtable['graphics'].text += '<li>%s &mdash; %s%s</li>' % (vendor, device, note)
+
+            self.hwtable['graphics'].text += '</ul>'
             self.hwtable['graphics'].resolved = True
 
             self.hwtable['battery'].resolved = True
