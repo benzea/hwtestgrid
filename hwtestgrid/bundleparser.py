@@ -5,7 +5,7 @@ import shutil
 import json
 import zipfile
 
-CURRENT_VERSION = 8
+CURRENT_VERSION = 9
 
 class HWInfo:
     def __init__(self, t):
@@ -46,6 +46,18 @@ class TestCase:
         self.data['fail_reason'] = \
             self.data['fail_reason'].replace("[WARNING: self.skip() will be deprecated. Use 'self.cancel()' or the skip decorators]", '').strip()
 
+        self._doc = self._get_docstring()
+
+        self.name = self.data['test']
+        self.name = re.sub(r'.*:', '', self.name)
+        self.name = re.sub(r';.*', '', self.name)
+
+        if self._doc:
+            title_match = re.search(r'\.\. title:: (?P<title>.*)$', self._doc, flags=re.MULTILINE)
+            if title_match is not None and title_match.group('title'):
+                self.name = title_match.group('title')
+
+
     @property
     def style(self):
         if self.data['status'] == 'WARN':
@@ -59,7 +71,7 @@ class TestCase:
 
         return 'WARN'
 
-    def get_docstring(self):
+    def _get_docstring(self):
         import ast
         match = re.match(r'.*/(?P<file>.*):(?P<class>.*)\.(?P<func>.*)', self.data['test'])
 
@@ -84,10 +96,8 @@ class TestCase:
         return self.data['status']
 
     def mark_categories(self):
-        docstring = self.get_docstring()
-
         categories = set()
-        for match in re.finditer(r'\s*:categories:\s*(?P<cats>\S+)\s*', docstring):
+        for match in re.finditer(r'\s*:categories:\s*(?P<cats>\S+)\s*', self._doc):
             cats = match.group('cats').strip().split(',')
             for cat in cats:
                 cat = cat.strip()
@@ -110,7 +120,7 @@ class TestCase:
 
     def gen_summary_dict(self):
         return {
-            'name' : re.sub(r'.*:', '', self.data['test']),
+            'name' : self.name,
             'status' : self.status,
             'style' : self.style,
             'whiteboard' : self.data['whiteboard'] if self.data['whiteboard'] else self.data['fail_reason'],
