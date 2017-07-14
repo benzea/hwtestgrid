@@ -38,9 +38,10 @@ class GBB:
             self.estimated_life = -1
 
 class TestCase:
-    def __init__(self, test, data):
+    def __init__(self, test, data, directory):
         self.test = test
         self.data = data
+        self.dir = directory
 
         self.data['fail_reason'] = \
             self.data['fail_reason'].replace("[WARNING: self.skip() will be deprecated. Use 'self.cancel()' or the skip decorators]", '').strip()
@@ -113,7 +114,7 @@ class TestCase:
             'status' : self.status,
             'style' : self.style,
             'whiteboard' : self.data['whiteboard'] if self.data['whiteboard'] else self.data['fail_reason'],
-            'dir' : self.test.maindir + '/test-results/' + self.data['test'].replace('/', '_'),
+            'dir' : self.dir + '/test-results/' + self.data['test'].replace('/', '_'),
         }
 
 class HWInfo:
@@ -147,10 +148,8 @@ class Test:
             if '/' in filename:
                 toplevel_dirs.add(filename.split('/')[0])
 
-        # TODO: Which do we take if there are multiple? Ideally we need to
-        #       search all of them in a lot of cases
-        self.maindir = sorted(toplevel_dirs)[0]
         self.testruns = list(sorted(toplevel_dirs))
+        self.maindir = self.testruns[-1]
 
         self.sysinfo = {}
         self.power_info = {}
@@ -391,15 +390,14 @@ class Test:
                 self.hwtable['firmware'].resolved = True
 
     def parse_tests(self):
-        results = json.loads(self.zip.read(os.path.join(self.maindir, 'results.json')).decode('utf-8'))
+        for run in self.testruns:
+            results = json.loads(self.zip.read(os.path.join(run, 'results.json')).decode('utf-8'))
 
-        for test in results['tests']:
-            if test['status'] == 'SKIP':
-                pass
-
-            t = TestCase(self, test)
-            t.mark_categories()
-            self.testcases.append(t)
+            # Assumes that all except the first run are replays
+            for test in results['tests'][len(self.testcases):]:
+                t = TestCase(self, test, run)
+                t.mark_categories()
+                self.testcases.append(t)
 
 
     def find_gbb_tests(self):
