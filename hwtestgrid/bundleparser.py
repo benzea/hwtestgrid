@@ -394,7 +394,7 @@ class Test:
             for battery in gbb.hardware['batteries']:
                 self.hwtable['battery'].text += '<li>{:2.2f} Wh</li>\n'.format(battery['energy-full-design'])
             self.hwtable['battery'].text += '</ul>Estimated Life:\n<ul>'
-            for gbb in self.gbb:
+            for gbb in sorted(self.gbb, key=lambda v : v.name):
                 self.hwtable['battery'].text += "<li><strong>{test:s}</strong>: {hours:02d}:{min:02d}h ({watt:.2f}W) <br/>(screen brightness: {brightness:.0f}%, test duration: {duration:.0f}min)</li>\n".format(
                             test=gbb.name,
                             hours=int(gbb.estimated_life / 60 / 60),
