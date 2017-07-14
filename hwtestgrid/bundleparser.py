@@ -66,7 +66,12 @@ class TestCase:
         tclass = match.group('class')
         tfunc = match.group('func')
 
-        mod = ast.parse(open(os.path.join(os.path.dirname(__file__), 'fedora-laptop-testing', 'tests', fname)).read(), fname)
+        try:
+            f = open(os.path.join(os.path.dirname(__file__), 'fedora-laptop-testing', 'tests', fname))
+        except IOError:
+            return ''
+
+        mod = ast.parse(f.read(), fname)
         for statement in mod.body:
             if not isinstance(statement, ast.ClassDef) or statement.name != tclass:
                 continue
