@@ -11,8 +11,8 @@ echo "Running in $PWD"
 echo "DB is at: $DATABASE"
 if [ ! -f "$DATABASE" ]; then
   echo "Initializing $DATABASE"
-  flask setupdb
+  python2 -m flask setupdb
 fi
 
-exec flask run --host 0.0.0.0
+exec python2 -m flask run --host 0.0.0.0
 
