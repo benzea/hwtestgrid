@@ -5,8 +5,9 @@ import re
 import shutil
 import json
 import zipfile
+import sys
 
-CURRENT_VERSION = 9
+CURRENT_VERSION = 11
 
 class HWInfo:
     def __init__(self, t):
@@ -30,13 +31,21 @@ class GBB:
         self.os = data['system-info']['software']['os']['type']
         self.gpus = data['system-info']['hardware']['gpus']
 
-        # TODO: Fill in data from GBB
         self.watt = data['power']
-
         if 'estimated-life-design' in data:
             self.estimated_life = data['estimated-life-design']
         else:
             self.estimated_life = -1
+
+        if 'format-version' not in data['system-info'] or data['system-info']['format-version'] == [1, 0, 0]:
+            # The estimation is really bad, primarily because of the first
+            # sample not being discarded.
+            dt1 = data['log'][1]
+            dt2 = data['log'][-1]
+            self.watt = (dt1['energy'] - dt2['energy']) / float(dt2['time-ms'] - dt1['time-ms']) * 3.6
+
+            energy_use_per_ms = (dt1['energy'] - dt2['energy']) / float(dt2['time-ms'] - dt1['time-ms'])
+            self.estimated_life = data['log'][0]['energy-full-design'] / energy_use_per_ms / 1000
 
 class TestCase:
     def __init__(self, test, data, directory):
@@ -429,7 +438,8 @@ class Test:
                 try:
                     self.gbb.append(GBB(self, filename))
                 except:
-                    print('Error parsing GBB information, ignoring {:s}'.format(filename))
+                    details = sys.exc_info()[1]
+                    print('Error parsing GBB information, ignoring {:s} ({:s})'.format(filename, details))
 
     def get_unique_identifier(self):
         return self.maindir
