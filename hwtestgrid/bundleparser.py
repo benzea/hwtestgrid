@@ -7,7 +7,7 @@ import json
 import zipfile
 import sys
 
-CURRENT_VERSION = 11
+CURRENT_VERSION = 12
 
 class HWInfo:
     def __init__(self, t):
@@ -187,6 +187,7 @@ class Test:
         self.hwtable['pointer'] = HWInfo('Pointer Devices')
         self.hwtable['battery'] = HWInfo('Battery')
         self.hwtable['firmware'] = HWInfo('Firmware')
+        self.hwtable['fingerprint'] = HWInfo('Fingerprint Reader')
 
         self.get_sysinfo()
         if 'CPU' in self.sysinfo:
@@ -419,6 +420,47 @@ class Test:
                 bios = gbb.hardware['bios']
                 self.hwtable['firmware'].text = 'BIOS: {:s}, date: {:s}, vendor: {:s}'.format(bios['version'], bios['date'], bios['vendor'])
                 self.hwtable['firmware'].resolved = True
+
+            # Fingerprint
+            readers = self.find_dbus_objects('/net/reactivated/Fprint/Device/')
+            if readers:
+                self.hwtable['fingerprint'].text = 'Available fingerprint readers:<ul>'
+                self.hwtable['fingerprint'].resolved = True
+                for reader in readers.itervalues():
+                    device = reader['interfaces']['net.reactivated.Fprint.Device']
+                    self.hwtable['fingerprint'].text += '<li>{:s} (scan type: {:s})</li>'.format(device['props']['name'], device['props']['scan-type'])
+                self.hwtable['fingerprint'].text += '</ul>'
+            else:
+                self.hwtable['fingerprint'].text = 'No fingerprint reader was detected'
+
+    def ensure_dbus(self):
+        if hasattr(self, '_dbus'):
+            return
+
+        self._dbus = None
+
+        for filename in self.zip.namelist():
+            if 'pre/fed-dbus-dump.py' in filename:
+                dbus_dump = filename
+                break
+        else:
+            # Not found
+            return
+
+        self._dbus = json.loads(self.zip.read(os.path.join(dbus_dump)).decode('utf-8'))
+
+    def find_dbus_objects(self, prefix):
+        self.ensure_dbus()
+
+        if not self._dbus:
+            return []
+
+        res = {}
+        for s in self._dbus.values():
+            for obj_path, obj in s.iteritems():
+                if obj_path.startswith(prefix):
+                    res[obj_path] = obj
+        return res
 
     def parse_tests(self):
         for run in self.testruns:
