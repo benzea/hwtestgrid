@@ -423,15 +423,19 @@ class Test:
 
             # Fingerprint
             readers = self.find_dbus_objects('/net/reactivated/Fprint/Device/')
-            if readers:
-                self.hwtable['fingerprint'].text = 'Available fingerprint readers:<ul>'
-                self.hwtable['fingerprint'].resolved = True
-                for reader in readers.itervalues():
-                    device = reader['interfaces']['net.reactivated.Fprint.Device']
-                    self.hwtable['fingerprint'].text += '<li>{:s} (scan type: {:s})</li>'.format(device['props']['name'], device['props']['scan-type'])
-                self.hwtable['fingerprint'].text += '</ul>'
+            if self._dbus is None:
+                self.hwtable['fingerprint'].text = 'Unresolved'
+
             else:
-                self.hwtable['fingerprint'].text = 'No fingerprint reader was detected'
+                self.hwtable['fingerprint'].resolved = True
+                if readers:
+                    self.hwtable['fingerprint'].text = 'Available fingerprint readers:<ul>'
+                    for reader in readers.itervalues():
+                        device = reader['interfaces']['net.reactivated.Fprint.Device']
+                        self.hwtable['fingerprint'].text += '<li>{:s} (scan type: {:s})</li>'.format(device['props']['name'], device['props']['scan-type'])
+                    self.hwtable['fingerprint'].text += '</ul>'
+                else:
+                    self.hwtable['fingerprint'].text = 'No fingerprint reader was detected'
 
     def ensure_dbus(self):
         if hasattr(self, '_dbus'):
@@ -447,7 +451,11 @@ class Test:
             # Not found
             return
 
-        self._dbus = json.loads(self.zip.read(os.path.join(dbus_dump)).decode('utf-8'))
+        try:
+            self._dbus = json.loads(self.zip.read(os.path.join(dbus_dump)).decode('utf-8'))
+        except:
+            print('Could not decode dbus dump. Maybe it failed being created?')
+            pass
 
     def find_dbus_objects(self, prefix):
         self.ensure_dbus()
