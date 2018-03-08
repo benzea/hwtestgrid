@@ -153,10 +153,13 @@ def extract_file_bundle(test_id, path):
 
             target_postfix = fname
             target_postfix = request.args.get('fname', target_postfix)
+            view = request.args.get('view', None)
+            if view is None or view:
+                view = True
             target = bundle[:-4] + '_' + target_postfix
             target = request.args.get('target', target)
 
-            return send_file(f, attachment_filename=target, as_attachment=True, add_etags=False)
+            return send_file(f, attachment_filename=target, as_attachment=not view, add_etags=False)
 
         else:
             # Extract the directory and deliver a zip file with the content
